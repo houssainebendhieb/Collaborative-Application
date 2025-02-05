@@ -1,0 +1,124 @@
+{
+  "project_info": {
+    "project_number": "217369637030",
+    "project_id": "useradd-ef05d",
+    "storage_bucket": "useradd-ef05d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:217369637030:android:ff3185d0e4a5fd19428467",
+        "android_client_info": {
+          "package_name": "com.example.demo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6tEWg3_BZtlvOn1VGbU8PMusPRUzhFDM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:217369637030:android:561f53c5d3f5fc66428467",
+        "android_client_info": {
+          "package_name": "com.example.flutter_e_commerce"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6tEWg3_BZtlvOn1VGbU8PMusPRUzhFDM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:217369637030:android:e139554ace2dc938428467",
+        "android_client_info": {
+          "package_name": "com.example.google_docs_clone"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6tEWg3_BZtlvOn1VGbU8PMusPRUzhFDM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:217369637030:android:2441c5483af9114e428467",
+        "android_client_info": {
+          "package_name": "com.example.reservationroom"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6tEWg3_BZtlvOn1VGbU8PMusPRUzhFDM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:217369637030:android:3415b3e8fddaa9a8428467",
+        "android_client_info": {
+          "package_name": "com.example.social_media"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6tEWg3_BZtlvOn1VGbU8PMusPRUzhFDM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:217369637030:android:50ad0276dcb23d18428467",
+        "android_client_info": {
+          "package_name": "com.example.trello"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6tEWg3_BZtlvOn1VGbU8PMusPRUzhFDM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
