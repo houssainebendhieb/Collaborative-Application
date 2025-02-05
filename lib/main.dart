@@ -5,6 +5,7 @@ import 'package:google_docs_clone/feature/document/logic/cubit/document_page_cub
 import 'package:google_docs_clone/feature/document/views/document_page.dart';
 import 'package:google_docs_clone/firebase_options.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
