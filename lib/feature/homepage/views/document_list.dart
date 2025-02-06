@@ -14,15 +14,26 @@ class _DocumentListState extends State<DocumentList> {
   Widget build(BuildContext context) {
     return BlocBuilder<HomepageCubit, HomepageState>(
       builder: (context, state) {
-        return Expanded(
-            child: ListView.builder(
-          itemCount: 10,
-          itemBuilder: (context, index) {
-            return const ListTile(
-              title: Text("houssaine "),
-            );
-          },
-        ));
+        if (state is HomepageDocumentSucces) {
+          return Expanded(
+              child: ListView.builder(
+            itemCount: state.listDocument.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text("${state.listDocument[index]['title']} "),
+              );
+            },
+          ));
+        } else if (state is HomepageLoading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state is HomepageFailure) {
+          return Center(
+            child: Text("${state.errorMessage}"),
+          );
+        }
+        return const Text("not found");
       },
     );
   }

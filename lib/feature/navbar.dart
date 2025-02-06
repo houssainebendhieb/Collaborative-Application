@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_docs_clone/feature/auth/data/cubit/user_cubit.dart';
 import 'package:google_docs_clone/feature/chat/views/chat.dart';
+import 'package:google_docs_clone/feature/homepage/data/cubit/homepage_cubit.dart';
 import 'package:google_docs_clone/feature/homepage/views/homepage.dart';
 import 'package:google_docs_clone/feature/invitation/views/invitation.dart';
 import 'package:google_docs_clone/feature/settings/views/settings.dart';
@@ -16,13 +17,16 @@ class Navbar extends StatefulWidget {
 class _NavbarState extends State<Navbar> {
   int currentIndex = 0; // camel case
   // snake case chat_room.dart
-  final List<Widget> listScreen =  [
-  const   HomePageScreen(),
-   const  ChatScreen(),
-   const  InvitationScreen(),
+  final List<Widget> listScreen = [
+    BlocProvider(
+      create: (context) => HomepageCubit(),
+      child: const HomePageScreen(),
+    ),
+    const ChatScreen(),
+    const InvitationScreen(),
     BlocProvider(
       create: (context) => UserCubit(),
-      child:const  SettingScreen(),
+      child: const SettingScreen(),
     ),
   ];
   @override
