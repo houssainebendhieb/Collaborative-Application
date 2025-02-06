@@ -55,12 +55,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                 // Login Button
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       // Perform login action
-                      context.read<UserCubit>().SignUp(
-                          email: emailController.text.trim().toLowerCase(),
-                          password: passwordController.text.trim());
+                      bool correctSignUp = await context
+                          .read<UserCubit>()
+                          .SignUp(
+                              email: emailController.text.trim().toLowerCase(),
+                              password: passwordController.text.trim());
+                      if (correctSignUp) {
+                        Navigator.pop(context);
+                      }
                     }
                   },
                   style: ElevatedButton.styleFrom(

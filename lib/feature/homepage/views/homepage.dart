@@ -10,6 +10,6 @@ class HomePageScreen extends StatefulWidget {
 class _HomePageScreenState extends State<HomePageScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Text("homepage hhh");
+    return const Center(child: Text("homepage hhh"));
   }
 }

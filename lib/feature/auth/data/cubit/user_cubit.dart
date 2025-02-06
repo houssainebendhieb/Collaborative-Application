@@ -14,13 +14,10 @@ class UserCubit extends Cubit<UserState> {
       required String password,
       required BuildContext context}) async {
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return const HomePageScreen();
-      }));
     } on FirebaseAuthException catch (e) {
       emit(UserLoginFailure(errorMessage: 'Invalide password or email'));
     } catch (e) {
@@ -28,10 +25,13 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
-  Future<void> SignUp({required String email, required String password}) async {
+  Future<bool> SignUp({required String email, required String password}) async {
     try {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+      return true;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         emit(UserSignUpFailure(
@@ -42,8 +42,10 @@ class UserCubit extends Cubit<UserState> {
       } else {
         emit(UserSignUpFailure(errorMessage: e.code));
       }
+      return false;
     } catch (e) {
       emit(UserSignUpFailure(errorMessage: e.toString()));
+      return false;
     }
   }
 

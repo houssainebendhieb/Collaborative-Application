@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_docs_clone/feature/auth/data/cubit/user_cubit.dart';
 import 'package:google_docs_clone/feature/auth/views/login.dart';
 import 'package:google_docs_clone/feature/homepage/views/homepage.dart';
+import 'package:google_docs_clone/feature/navbar.dart';
 import 'package:google_docs_clone/firebase_options.dart';
 
 void main() async {
@@ -19,7 +20,7 @@ void main() async {
             stream: FirebaseAuth.instance.authStateChanges(),
             builder: (context, snapshot) {
               if (snapshot.data != null) {
-                return const HomePageScreen();
+                return const Navbar();
               } else {
                 return BlocProvider(
                   create: (context) => UserCubit(),

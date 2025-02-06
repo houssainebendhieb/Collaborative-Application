@@ -36,21 +36,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 20),
 
                 // Email TextField
-                custom_text_field(emailController: emailController),
+                custom_text_field(
+                    textInputType: "email", emailController: emailController),
                 const SizedBox(height: 16),
 
                 // Password TextField
-                TextFormField(
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration:
-                      CustomDecorationTextField.inputDecoration("Password"),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Please enter your password";
-                    }
-                    return null;
-                  },
+                custom_text_field(
+                  emailController: passwordController,
+                  textInputType: "email",
                 ),
                 const SizedBox(height: 24),
 
