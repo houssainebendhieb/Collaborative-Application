@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_docs_clone/feature/document/logic/cubit/document_page_cubit.dart';
+import 'package:google_docs_clone/feature/document/views/document_page.dart';
 import 'package:google_docs_clone/feature/homepage/data/cubit/homepage_cubit.dart';
 
 class DocumentList extends StatefulWidget {
@@ -37,12 +39,28 @@ class _DocumentListState extends State<DocumentList> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Icon(Icons.file_present_outlined),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 15),
-                              child: Column(children: [
-                                Text("${state.listDocument[index]['title']}"),
-                                Text("last update ")
-                              ]),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) {
+                                  return BlocProvider(
+                                    create: (context) => DocumentPageCubit(
+                                        id: state.listDocument[index]['id']),
+                                    child: DocumentPageScreen(
+                                      idDocument: state.listDocument[index]
+                                          ['id'],
+                                    ),
+                                  );
+                                }));
+                              },
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 15),
+                                child: Column(children: [
+                                  Text("${state.listDocument[index]['title']}"),
+                                  Text("last update ")
+                                ]),
+                              ),
                             ),
                             IconButton(
                               icon: Icon(Icons.delete, color: Colors.red[200]),
