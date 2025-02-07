@@ -38,6 +38,7 @@ dependencies:
   flutter_bloc: ^9.0.0
   flutter_keyboard_visibility_temp_fork: ^0.1.4
   flutter_quill: ^9.3.0
+  get_it: ^8.0.3
   logging: ^1.2.0
   quill_native_bridge: ^10.7.4
   routemaster: ^1.0.1

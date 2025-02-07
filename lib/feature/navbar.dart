@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_docs_clone/core/utils/di/get_instance.dart';
 import 'package:google_docs_clone/feature/auth/data/cubit/user_cubit.dart';
 import 'package:google_docs_clone/feature/chat/views/chat.dart';
 import 'package:google_docs_clone/feature/homepage/data/cubit/homepage_cubit.dart';
+import 'package:google_docs_clone/feature/homepage/data/logic/homepage_repo.dart';
 import 'package:google_docs_clone/feature/homepage/views/homepage.dart';
 import 'package:google_docs_clone/feature/invitation/views/invitation.dart';
 import 'package:google_docs_clone/feature/settings/views/settings.dart';
@@ -19,7 +21,8 @@ class _NavbarState extends State<Navbar> {
   // snake case chat_room.dart
   final List<Widget> listScreen = [
     BlocProvider(
-      create: (context) => HomepageCubit(),
+      create: (context) =>
+          HomepageCubit(homepageRepoImp: getIt.get<HomepageRepo>()),
       child: const HomePageScreen(),
     ),
     const ChatScreen(),

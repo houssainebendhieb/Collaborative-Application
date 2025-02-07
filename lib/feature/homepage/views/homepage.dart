@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_docs_clone/core/utils/di/get_instance.dart';
 import 'package:google_docs_clone/feature/homepage/data/cubit/homepage_cubit.dart';
+import 'package:google_docs_clone/feature/homepage/data/logic/homepage_repo.dart';
 import 'package:google_docs_clone/feature/homepage/views/document_list.dart';
 import 'package:google_docs_clone/feature/homepage/views/team_list.dart';
 
@@ -19,8 +21,24 @@ class _HomePageScreenState extends State<HomePageScreen> {
     var _width = MediaQuery.sizeOf(context).width;
     return SafeArea(
         child: Scaffold(
+      drawer: const Drawer(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 25),
+          child: Column(
+            children: [
+              Icon(
+                Icons.person,
+                size: 100,
+              ),
+              Text("Settings"),
+              Text("Theme"),
+              Text("Profile"),
+              Text("..."),
+            ],
+          ),
+        ),
+      ),
       appBar: AppBar(
-        leading: const Icon(Icons.menu, color: Colors.blue),
         title: const Text(
           "HomePage",
           style: TextStyle(color: Colors.blue),
@@ -69,7 +87,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
             ),
             index == 0
                 ? BlocProvider(
-                    create: (context) => HomepageCubit()..emitDocument(),
+                    create: (context) => HomepageCubit(
+                        homepageRepoImp: getIt.get<HomepageRepo>())
+                      ..emitDocument(),
                     child: const DocumentList(),
                   )
                 : const TeamList()
@@ -106,7 +126,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
                               .read<HomepageCubit>()
                               .addDocument(name: title);
                           Navigator.pop(context);
-                          rootContext.read<HomepageCubit>().emitDocument();
                         },
                         child: const Text("Add"),
                       ),

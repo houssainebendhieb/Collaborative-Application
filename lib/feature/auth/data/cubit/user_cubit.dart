@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_docs_clone/feature/homepage/views/homepage.dart';
+import 'package:google_docs_clone/core/utils/di/get_instance.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -10,13 +10,13 @@ part 'user_state.dart';
 
 class UserCubit extends Cubit<UserState> {
   UserCubit() : super(UserInitial());
-
+  final _firebase = getIt.get<FirebaseFirestore>();
   Future<void> login(
       {required String email,
       required String password,
       required BuildContext context}) async {
     try {
-      var res = await FirebaseFirestore.instance
+      var res = await _firebase
           .collection("user")
           .where("email", isEqualTo: email)
           .get();
@@ -42,13 +42,9 @@ class UserCubit extends Cubit<UserState> {
     try {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-      DocumentReference doc = await FirebaseFirestore.instance
-          .collection("user")
-          .add({"email": email});
-      await FirebaseFirestore.instance
-          .collection("user")
-          .doc(doc.id)
-          .update({"id": doc.id});
+      DocumentReference doc =
+          await _firebase.collection("user").add({"email": email});
+      await _firebase.collection("user").doc(doc.id).update({"id": doc.id});
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
 
