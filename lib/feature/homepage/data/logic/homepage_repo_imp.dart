@@ -36,7 +36,6 @@ class HomepageRepoImp extends HomepageRepo {
       var res = await _firebase.collection("documents").doc(i).get();
       listDocument.add(res.data()!);
     }
-
     return listDocument;
   }
 
@@ -81,11 +80,21 @@ class HomepageRepoImp extends HomepageRepo {
     List<Map<String, dynamic>> listDocument = [];
     var res = await _firebase
         .collection("userteam")
-        .where("userId", isEqualTo: id)
+        .where("iduser", isEqualTo: id)
         .get();
     for (var item in res.docChanges) {
       listDocument.add(item.doc.data()!);
     }
+    for (var item in listDocument) {
+      var team = await getTeamById(id: item['idteam']);
+      item['name'] = team['name'];
+    }
     return listDocument;
+  }
+
+  @override
+  Future<Map<String, dynamic>> getTeamById({required String id}) async {
+    var doc = await _firebase.collection("team").doc(id).get();
+    return doc.data()!;
   }
 }

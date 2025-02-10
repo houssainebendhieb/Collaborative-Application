@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_docs_clone/feature/homepage/data/cubit/homepage_cubit.dart';
 
 class MyteamScreen extends StatefulWidget {
-  const MyteamScreen({super.key});
+  final int index;
+  const MyteamScreen({required this.index, super.key});
 
   @override
   State<MyteamScreen> createState() => _MyteamScreenState();
@@ -14,26 +15,31 @@ class _MyteamScreenState extends State<MyteamScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<HomepageCubit, HomepageState>(
       builder: (context, state) {
-        if (state is HomepageMyTeamSucces) {
-          if (state.listTeam.isEmpty) {
+        if (state is HomepageMyTeamLoading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state is HomepageMyTeamSucces) {
+          if (widget.index == 0 &&
+              (state.listMyTeam.isEmpty || state.listTeam.isEmpty)) {
             return const Center(
-              child: Text("Empty"),
+              child: Text("Empty List ..."),
             );
           }
           return Expanded(
               child: ListView.builder(
-                  itemCount: state.listTeam.length,
+                  itemCount: widget.index == 0
+                      ? state.listMyTeam.length
+                      : state.listTeam.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                      title: Text("${state.listTeam[index]['name']}"),
+                      title: widget.index == 0
+                          ? Text(" ${state.listMyTeam[index]['name']}")
+                          : Text(" ${state.listTeam[index]['name']}"),
                     );
                   }));
-        } else if (state is HomepageMyTeamLoading) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
         }
-        return Text("not found");
+        return const Text("not found");
       },
     );
   }

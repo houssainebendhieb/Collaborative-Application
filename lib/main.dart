@@ -7,9 +7,7 @@ import 'package:google_docs_clone/feature/auth/data/cubit/user_cubit.dart';
 import 'package:google_docs_clone/feature/auth/views/login.dart';
 import 'package:google_docs_clone/feature/navbar.dart';
 import 'package:google_docs_clone/firebase_options.dart';
-
 void main() async {
-  
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

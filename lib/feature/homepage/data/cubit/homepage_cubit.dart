@@ -30,9 +30,11 @@ class HomepageCubit extends Cubit<HomepageState> {
 
   Future<void> emitMyTeam() async {
     emit(HomepageMyTeamLoading());
-    List<Map<String, dynamic>> listTeam = [];
-    listTeam = await homepageRepoImp.getMyTeam();
-    emit(HomepageMyTeamSucces(listTeam: listTeam));
+    List<Map<String, dynamic>> listMyTeam = [];
+    listMyTeam = await homepageRepoImp.getMyTeam();
+    List<Map<String, dynamic>> listTeams = [];
+    listTeams = await homepageRepoImp.getTeam();
+    emit(HomepageMyTeamSucces(listTeam: listTeams, listMyTeam: listMyTeam));
   }
 
   Future<void> createTeam({required String teamName}) async {

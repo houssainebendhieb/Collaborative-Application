@@ -23,7 +23,8 @@ class InvitationRepoImp extends InvitationRepo {
   }
 
   @override
-  Future<bool> sendInvitation({required String email}) async {
+  Future<bool> sendInvitation(
+      {required String email, required String teamName}) async {
     var res = await _firebase
         .collection("user")
         .where("email", isEqualTo: email)
@@ -35,7 +36,9 @@ class InvitationRepoImp extends InvitationRepo {
     DocumentReference doc = await _firebase.collection("invitation").add({
       "sender": id,
       "receiver": res.docChanges.first.doc.data()!['id'],
-      "status": "pending"
+      "status": "pending",
+      "teamname": teamName,
+      "emailsender": sharedPreferences.getString("email")
     });
     await _firebase.collection("invitation").doc(doc.id).update({"id": doc.id});
     return true;
@@ -70,6 +73,13 @@ class InvitationRepoImp extends InvitationRepo {
   @override
   Future<void> updateInvitaion(
       {required String id, required bool status}) async {
-    await _firebase.collection("invitation").doc(id).update({"status": status});
+    DocumentReference doc = await _firebase.collection("invitation").doc(id);
+    doc.update({"status": status});
+    if (status) {
+      final String? idd = sharedPreferences.getString('id');
+      await _firebase
+          .collection("userteam")
+          .add({"iduser": idd, "idteam": doc.id});
+    }
   }
 }

@@ -94,7 +94,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
                   )
                 : BlocProvider(
                     create: (context) => HomepageCubit(
-                        homepageRepoImp: getIt.get<HomepageRepo>()),
+                        homepageRepoImp: getIt.get<HomepageRepo>())
+                      ..emitMyTeam(),
                     child: const TeamList(),
                   )
           ],

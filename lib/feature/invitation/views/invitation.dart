@@ -65,26 +65,28 @@ class _InvitationScreenState extends State<InvitationScreen> {
                 ],
               ),
             ),
-            index == 1
-                ? BlocProvider(
-                    create: (context) => InvitationCubit(
-                        invitationRepoImp: getIt.get<InvitationRepo>())
-                      ..emitAllPending(),
-                    child: const PendingScreen(),
-                  )
-                : BlocProvider(
-                    create: (context) => InvitationCubit(
-                        invitationRepoImp: getIt.get<InvitationRepo>())
-                      ..emitAllRequest(),
-                    child: const RequestScreen(),
-                  )
+            BlocProvider(
+              create: (context) => InvitationCubit(
+                  invitationRepoImp: getIt.get<InvitationRepo>())
+                ..emitAllRequest(),
+              child: PendingScreen(index: index),
+            ),
           ],
         ),
       ),
       floatingActionButton: index == 1
           ? ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                List<Map<String, dynamic>> listTeam = [];
+                listTeam = await context.read<InvitationCubit>().getMyTeam();
                 final BuildContext totoContext = context;
+                List<String> listNames = [];
+                for (var item in listTeam) {
+                  listNames.add(item['name']);
+                }
+
+                print(listNames);
+                late String selectedTeam = listNames[0];
                 showDialog(
                     context: context,
                     builder: (context) {
@@ -100,6 +102,7 @@ class _InvitationScreenState extends State<InvitationScreen> {
                                   if (value == null || value.isEmpty) {
                                     return "invalid email";
                                   }
+                                  return null;
                                 },
                                 controller: emailController,
                                 decoration: const InputDecoration(
@@ -108,6 +111,24 @@ class _InvitationScreenState extends State<InvitationScreen> {
                                 ),
                               ),
                             ),
+                            DropdownButtonFormField<String>(
+                              value: selectedTeam,
+                              decoration: const InputDecoration(
+                                labelText: 'Select Team',
+                                border: OutlineInputBorder(),
+                              ),
+                              items: listNames.map((value) {
+                                return DropdownMenuItem(
+                                    value: value, child: Text("$value"));
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedTeam = value!;
+                                });
+                              },
+                              validator: (value) =>
+                                  value == null ? 'Please select a team' : null,
+                            ),
                           ],
                         ),
                         actions: [
@@ -115,7 +136,9 @@ class _InvitationScreenState extends State<InvitationScreen> {
                             onPressed: () async {
                               bool res = await totoContext
                                   .read<InvitationCubit>()
-                                  .sendInvitation(email: emailController.text);
+                                  .sendInvitation(
+                                      email: emailController.text,
+                                      teamName: selectedTeam);
                               if (res == false) {
                                 Navigator.pop(context);
                                 ScaffoldMessenger.of(context)

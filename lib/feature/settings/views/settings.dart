@@ -21,10 +21,10 @@ class _SettingsState extends State<SettingScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text("${sharedPreferences.get("email")}"),
+        Text("${sharedPreferences.get("id")}"),
         Center(
             child: ElevatedButton(
                 onPressed: () {
-                  
                   context.read<UserCubit>().SignOut();
                 },
                 child: const Text("Sign Out"))),

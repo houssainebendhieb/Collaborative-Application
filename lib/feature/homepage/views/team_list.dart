@@ -1,11 +1,9 @@
-import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_docs_clone/core/utils/di/get_instance.dart';
 import 'package:google_docs_clone/feature/homepage/data/cubit/homepage_cubit.dart';
 import 'package:google_docs_clone/feature/homepage/data/logic/homepage_repo.dart';
 import 'package:google_docs_clone/feature/homepage/views/myteam.dart';
-import 'package:google_docs_clone/feature/homepage/views/teams.dart';
 
 class TeamList extends StatefulWidget {
   const TeamList({super.key});
@@ -60,14 +58,14 @@ class _TeamListState extends State<TeamList> {
               ],
             ),
           ),
-          index == 0
-              ? BlocProvider(
-                  create: (context) =>
-                      HomepageCubit(homepageRepoImp: getIt.get<HomepageRepo>())
-                        ..emitMyTeam(),
-                  child: const MyteamScreen(),
-                )
-              : TeamsScreen()
+          BlocProvider(
+            create: (context) =>
+                HomepageCubit(homepageRepoImp: getIt.get<HomepageRepo>())
+                  ..emitMyTeam(),
+            child: MyteamScreen(
+              index: index,
+            ),
+          )
         ],
       ),
     );
