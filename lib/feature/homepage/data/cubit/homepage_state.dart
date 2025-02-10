@@ -15,7 +15,14 @@ final class HomepageTeamSucces extends HomepageState {
   final List<Map<String, dynamic>> listTeam;
 }
 
+final class HomepageMyTeamSucces extends HomepageState {
+  HomepageMyTeamSucces({required this.listTeam});
+  final List<Map<String, dynamic>> listTeam;
+}
+
 final class HomepageLoading extends HomepageState {}
+
+final class HomepageMyTeamLoading extends HomepageState {}
 
 final class HomepageFailure extends HomepageState {
   final String errorMessage;

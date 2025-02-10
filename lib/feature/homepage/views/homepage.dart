@@ -92,7 +92,11 @@ class _HomePageScreenState extends State<HomePageScreen> {
                       ..emitDocument(),
                     child: const DocumentList(),
                   )
-                : const TeamList()
+                : BlocProvider(
+                    create: (context) => HomepageCubit(
+                        homepageRepoImp: getIt.get<HomepageRepo>()),
+                    child: const TeamList(),
+                  )
           ],
         ),
       ),
@@ -133,7 +137,42 @@ class _HomePageScreenState extends State<HomePageScreen> {
                   );
                 },
               );
-            } else {}
+            } else {
+              final TextEditingController titleController =
+                  TextEditingController();
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text("Enter Title"),
+                    content: TextField(
+                      controller: titleController,
+                      decoration: const InputDecoration(
+                          hintText: "Type your title here"),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context); // Close dialog
+                        },
+                        child: const Text("Cancel"),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          String title = titleController.text;
+                          rootContext
+                              .read<HomepageCubit>()
+                              .createTeam(teamName: title);
+
+                          Navigator.pop(context);
+                        },
+                        child: const Text("Add"),
+                      ),
+                    ],
+                  );
+                },
+              );
+            }
           },
           child: const Icon(Icons.add)),
     ));

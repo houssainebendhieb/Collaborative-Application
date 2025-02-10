@@ -28,20 +28,15 @@ class HomepageCubit extends Cubit<HomepageState> {
     }
   }
 
-  Future<void> emitTeam() async {
-    emit(HomepageLoading());
-    try {
-      var res = await FirebaseFirestore.instance.collection("team").get();
-      List<Map<String, dynamic>> list = [];
-      for (var a in res.docChanges) {
-        list.add(a.doc.data()!);
-      }
-      emit(HomepageDocumentSucces(listDocument: list));
-    } on FirebaseException catch (e) {
-      emit(HomepageFailure(errorMessage: e.toString()));
-    } catch (e) {
-      emit(HomepageFailure(errorMessage: e.toString()));
-    }
+  Future<void> emitMyTeam() async {
+    emit(HomepageMyTeamLoading());
+    List<Map<String, dynamic>> listTeam = [];
+    listTeam = await homepageRepoImp.getMyTeam();
+    emit(HomepageMyTeamSucces(listTeam: listTeam));
+  }
+
+  Future<void> createTeam({required String teamName}) async {
+    homepageRepoImp.createTeam(teamName: teamName);
   }
 
   Future<void> deleteDocument({required String idDocument}) async {

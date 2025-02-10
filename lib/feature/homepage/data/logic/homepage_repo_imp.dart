@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class HomepageRepoImp extends HomepageRepo {
   final _firebase = getIt.get<FirebaseFirestore>();
+  final SharedPreferences sharedPreferences = getIt.get<SharedPreferences>();
   @override
   Future<void> addDocument({required String name}) async {
     DocumentReference doc =
@@ -20,8 +21,6 @@ class HomepageRepoImp extends HomepageRepo {
 
   @override
   Future<List<Map<String, dynamic>>> getDocument() async {
-    final SharedPreferences sharedPreferences = getIt.get<SharedPreferences>();
-
     String? id = sharedPreferences.getString("id");
     var res = await _firebase
         .collection("documentuser")
@@ -42,8 +41,12 @@ class HomepageRepoImp extends HomepageRepo {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> getTeam() async {
-    var res = await _firebase.collection("team").get();
+  Future<List<Map<String, dynamic>>> getMyTeam() async {
+    final String? id = sharedPreferences.getString("id");
+    var res = await _firebase
+        .collection("team")
+        .where("idOwner", isEqualTo: id)
+        .get();
     List<Map<String, dynamic>> list = [];
     for (var a in res.docChanges) {
       list.add(a.doc.data()!);
@@ -61,5 +64,28 @@ class HomepageRepoImp extends HomepageRepo {
     var doc = res.docChanges.first.doc;
     await _firebase.collection("documentuser").doc(doc.id).delete();
     await _firebase.collection("documents").doc(idDocument).delete();
+  }
+
+  @override
+  Future<void> createTeam({required String teamName}) async {
+    final String? id = sharedPreferences.getString("id");
+    DocumentReference doc = await _firebase
+        .collection("team")
+        .add({"name": teamName, "idOwner": id});
+    await _firebase.collection("team").doc(doc.id).update({"id": doc.id});
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getTeam() async {
+    final String? id = sharedPreferences.getString("id");
+    List<Map<String, dynamic>> listDocument = [];
+    var res = await _firebase
+        .collection("userteam")
+        .where("userId", isEqualTo: id)
+        .get();
+    for (var item in res.docChanges) {
+      listDocument.add(item.doc.data()!);
+    }
+    return listDocument;
   }
 }
