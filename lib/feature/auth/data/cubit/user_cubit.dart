@@ -24,6 +24,7 @@ class UserCubit extends Cubit<UserState> {
           res.docChanges.first.doc.data() as Map<String, dynamic>;
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString("id", data['id']);
+      prefs.setString("email", data['email']);
       print("here");
       print(res);
       print("id de user : ${data['id']}");
@@ -70,6 +71,7 @@ class UserCubit extends Cubit<UserState> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     await prefs.remove("id");
+    await prefs.remove("email");
     await FirebaseAuth.instance.signOut();
   }
 }
