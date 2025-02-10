@@ -32,7 +32,7 @@ class HomepageRepoImp extends HomepageRepo {
     for (var a in res.docChanges) {
       list.add(a.doc.data()!['idDocument']);
     }
- 
+
     for (var i in list) {
       var res = await _firebase.collection("documents").doc(i).get();
       listDocument.add(res.data()!);

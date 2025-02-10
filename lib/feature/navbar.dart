@@ -6,6 +6,8 @@ import 'package:google_docs_clone/feature/chat/views/chat.dart';
 import 'package:google_docs_clone/feature/homepage/data/cubit/homepage_cubit.dart';
 import 'package:google_docs_clone/feature/homepage/data/logic/homepage_repo.dart';
 import 'package:google_docs_clone/feature/homepage/views/homepage.dart';
+import 'package:google_docs_clone/feature/invitation/cubit/invitation_cubit.dart';
+import 'package:google_docs_clone/feature/invitation/logic/repo/invitation_repo.dart';
 import 'package:google_docs_clone/feature/invitation/views/invitation.dart';
 import 'package:google_docs_clone/feature/settings/views/settings.dart';
 
@@ -26,7 +28,11 @@ class _NavbarState extends State<Navbar> {
       child: const HomePageScreen(),
     ),
     const ChatScreen(),
-    const InvitationScreen(),
+    BlocProvider(
+      create: (context) =>
+          InvitationCubit(invitationRepoImp: getIt.get<InvitationRepo>()),
+      child: const InvitationScreen(),
+    ),
     BlocProvider(
       create: (context) => UserCubit(),
       child: const SettingScreen(),
