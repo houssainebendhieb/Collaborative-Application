@@ -1,13 +1,11 @@
 part of 'document_page_cubit.dart';
 
 @immutable
-sealed class DocumentPageState {}
+final class DocumentPageState extends Equatable {
+  final QuillController? quillController;
+  final String title;
+  DocumentPageState({required this.quillController, required this.title});
 
-final class DocumentPageInitial extends DocumentPageState {}
-
-final class DocumentPageSucces extends DocumentPageState {
-  final Map<String, dynamic> data;
-  DocumentPageSucces({required this.data});
+  @override
+  List<Object?> get props => [quillController, title];
 }
-
-final class DocumentPageLoading extends DocumentPageState {}

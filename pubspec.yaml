@@ -31,6 +31,7 @@ dependencies:
   appwrite: ^12.0.1
   cloud_firestore: ^5.4.0
   cupertino_icons: ^1.0.2
+  equatable: ^2.0.7
   firebase_auth: ^5.2.0
   firebase_core: ^3.4.0
   flutter:
@@ -38,9 +39,11 @@ dependencies:
   flutter_bloc: ^9.0.0
   flutter_keyboard_visibility_temp_fork: ^0.1.4
   flutter_quill: ^9.3.0
+  get_it: ^8.0.3
   logging: ^1.2.0
   quill_native_bridge: ^10.7.4
   routemaster: ^1.0.1
+  shared_preferences: ^2.5.1
   url_launcher: ^6.3.0
   uuid: ^4.5.1
   win32: ^5.10.1
