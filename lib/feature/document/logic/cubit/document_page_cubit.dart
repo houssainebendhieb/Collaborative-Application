@@ -16,7 +16,9 @@ class DocumentPageCubit extends Cubit<DocumentPageState> {
   DocumentPageCubit({required this.id})
       : super(DocumentPageState(
           title: "",
-          quillController: QuillController.basic(),
+          quillController: QuillController(
+              selection: const TextSelection.collapsed(offset: 0),
+              document: Document()..insert(0, "data")),
         )) {
     emitController(idDocument: id);
     setupRealtimeListener();
@@ -25,11 +27,12 @@ class DocumentPageCubit extends Cubit<DocumentPageState> {
   final _firestore = getIt.get<FirebaseFirestore>();
   final QuillController quillController = QuillController.basic();
   StreamSubscription<DocumentSnapshot>? realtimeListener;
+  var title = "";
   Future<void> emitController({required String idDocument}) async {
     final docSnapshot =
         await _firestore.collection('documents').doc(idDocument).get();
     print(docSnapshot);
-    final title = docSnapshot.data()!['title'];
+    title = docSnapshot.data()!['title'];
     late final Document quillDoc;
     if (docSnapshot.exists && docSnapshot.data()?['content'] != null) {
       quillDoc = Document.fromJson(jsonDecode(docSnapshot.data()!['content']));
@@ -77,7 +80,7 @@ class DocumentPageCubit extends Cubit<DocumentPageState> {
                 document: state.quillController!.document,
                 selection: const TextSelection.collapsed(offset: 0),
               ),
-              title: "id"));
+              title: title));
         }
       },
     );
