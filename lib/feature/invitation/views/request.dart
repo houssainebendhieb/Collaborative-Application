@@ -34,7 +34,7 @@ class _RequestScreenState extends State<RequestScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "${state.list[index]['email']}",
+                            "${state.list[index]['emailsender']}",
                             overflow: TextOverflow.ellipsis,
                           ),
                           Column(
