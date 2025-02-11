@@ -10,6 +10,20 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
-    return Center(child: const Text("chat screen"));
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(15),
+        child: Column(
+          children: [
+            Expanded(
+                child: ListView.builder(
+                    itemCount: 10,
+                    itemBuilder: (context, index) {
+                      return ListTile(title: Text("$index"));
+                    })),
+          ],
+        ),
+      ),
+    );
   }
 }
