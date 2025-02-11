@@ -32,20 +32,71 @@ class _PendingScreenState extends State<PendingScreen> {
                       ? state.list.length
                       : state.listPending.length,
                   itemBuilder: (context, index) {
-                    return ListTile(
-                      title: widget.index == 0
-                          ? Text("${state.list[index]['email']}")
-                          : Text("${state.listPending[index]['email']}"),
-                      leading: widget.index == 1
-                          ? IconButton(
-                              onPressed: () {
-                                context
-                                    .read<InvitationCubit>()
-                                    .deleteInvitation(
-                                        id: state.list[index]['id']);
-                              },
-                              icon: const Icon(Icons.delete, color: Colors.red))
-                          : null,
+                    return Container(
+                      height: MediaQuery.sizeOf(context).height * 0.1,
+                      width: MediaQuery.sizeOf(context).width * 0.9,
+                      padding: const EdgeInsets.all(25),
+                      decoration: BoxDecoration(
+                          color: Colors.blue.shade100,
+                          borderRadius: BorderRadius.circular(25)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          widget.index == 0
+                              ? Text(
+                                  "${state.list[index]['emailsender']}",
+                                  overflow: TextOverflow.ellipsis,
+                                )
+                              : Text(
+                                  "${state.listPending[index]['email']}",
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                          widget.index == 0
+                              ? Column(
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        height: 60,
+                                        width: 100,
+                                        decoration: BoxDecoration(
+                                            color: Colors.green,
+                                            borderRadius:
+                                                BorderRadius.circular(25)),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            context
+                                                .read<InvitationCubit>()
+                                                .changeStatus(
+                                                    id: state.list[index]['id'],
+                                                    status: true);
+                                          },
+                                          child: const Text("Accept"),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      height: 20,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius:
+                                              BorderRadius.circular(25)),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          context
+                                              .read<InvitationCubit>()
+                                              .changeStatus(
+                                                  id: state.list[index]['id'],
+                                                  status: false);
+                                        },
+                                        child: const Text("Refuse"),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : Container()
+                        ],
+                      ),
                     );
                   }));
         } else if (state is InvitationLoading) {

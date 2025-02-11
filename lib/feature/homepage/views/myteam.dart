@@ -20,12 +20,6 @@ class _MyteamScreenState extends State<MyteamScreen> {
             child: CircularProgressIndicator(),
           );
         } else if (state is HomepageMyTeamSucces) {
-          if (widget.index == 0 &&
-              (state.listMyTeam.isEmpty || state.listTeam.isEmpty)) {
-            return const Center(
-              child: Text("Empty List ..."),
-            );
-          }
           return Expanded(
               child: ListView.builder(
                   itemCount: widget.index == 0
