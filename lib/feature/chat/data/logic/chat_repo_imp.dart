@@ -23,8 +23,11 @@ class ChatRepoImp extends ChatRepo {
       {required String idTeam,
       required String messageContent,
       required String idUser}) async {
-    await _firebase
-        .collection("message")
-        .add({"idteam": idTeam, "message": messageContent, "iduser": idUser});
+    await _firebase.collection("message").add({
+      "idteam": idTeam,
+      "message": messageContent,
+      "iduser": idUser,
+      "date": DateTime.now()
+    });
   }
 }

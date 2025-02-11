@@ -38,6 +38,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                     create: (context) => ChatroomCubit(
                                         chatRepo: getIt.get<ChatRepo>()),
                                     child: ChatRoom(
+                                      teamName: state.listTeam[index]['name'],
                                       idTeam: state.listTeam[index]['id'] ??
                                           state.listTeam[index]['idteam'],
                                     ),
