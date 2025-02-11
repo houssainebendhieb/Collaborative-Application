@@ -8,3 +8,10 @@ sealed class ChatroomState extends Equatable {
 }
 
 final class ChatroomInitial extends ChatroomState {}
+
+final class ChatroomLoading extends ChatroomState {}
+
+final class ChatroomSucces extends ChatroomState {
+  final List<Map<String, dynamic>> listTeam;
+  ChatroomSucces({required this.listTeam});
+}
