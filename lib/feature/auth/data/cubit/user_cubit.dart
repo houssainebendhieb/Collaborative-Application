@@ -11,6 +11,7 @@ part 'user_state.dart';
 class UserCubit extends Cubit<UserState> {
   UserCubit() : super(UserInitial());
   final _firebase = getIt.get<FirebaseFirestore>();
+  final sharedPreferences = getIt.get<SharedPreferences>();
   Future<void> login(
       {required String email,
       required String password,
@@ -68,6 +69,7 @@ class UserCubit extends Cubit<UserState> {
       return false;
     }
   }
+
   Future<void> SignOut() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove("id");
@@ -75,4 +77,11 @@ class UserCubit extends Cubit<UserState> {
     await FirebaseAuth.instance.signOut();
   }
 
+  Future<void> updateProfile({required String username}) async {
+    String? id = sharedPreferences.getString("id");
+    await _firebase.collection("user").doc(id!).update({
+      "username": username,
+    });
+    sharedPreferences.setString("username", username);
+  }
 }
