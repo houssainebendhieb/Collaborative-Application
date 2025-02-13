@@ -4,7 +4,6 @@ import 'package:google_docs_clone/core/utils/di/get_instance.dart';
 import 'package:google_docs_clone/feature/invitation/cubit/invitation_cubit.dart';
 import 'package:google_docs_clone/feature/invitation/logic/repo/invitation_repo.dart';
 import 'package:google_docs_clone/feature/invitation/views/pending.dart';
-import 'package:google_docs_clone/feature/invitation/views/request.dart';
 
 class InvitationScreen extends StatefulWidget {
   const InvitationScreen({super.key});
