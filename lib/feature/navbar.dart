@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_docs_clone/core/utils/di/get_instance.dart';
 import 'package:google_docs_clone/feature/auth/data/cubit/user_cubit.dart';
+import 'package:google_docs_clone/feature/chat/data/cubit/chatroom_cubit.dart';
+import 'package:google_docs_clone/feature/chat/data/logic/chat_repo.dart';
 import 'package:google_docs_clone/feature/chat/views/chat.dart';
 import 'package:google_docs_clone/feature/homepage/data/cubit/homepage_cubit.dart';
 import 'package:google_docs_clone/feature/homepage/data/logic/homepage_repo.dart';
@@ -27,7 +29,11 @@ class _NavbarState extends State<Navbar> {
           HomepageCubit(homepageRepoImp: getIt.get<HomepageRepo>()),
       child: const HomePageScreen(),
     ),
-    const ChatScreen(),
+    BlocProvider(
+      create: (context) =>
+          ChatroomCubit(chatRepo: getIt.get<ChatRepo>())..emitTeam(),
+      child: const ChatScreen(),
+    ),
     BlocProvider(
       create: (context) =>
           InvitationCubit(invitationRepoImp: getIt.get<InvitationRepo>()),
