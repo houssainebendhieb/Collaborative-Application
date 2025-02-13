@@ -25,6 +25,7 @@ class UserCubit extends Cubit<UserState> {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString("id", data['id']);
       prefs.setString("email", data['email']);
+      prefs.setString("password", data['password']);
       print("here");
       print(res);
       print("id de user : ${data['id']}");
@@ -43,8 +44,9 @@ class UserCubit extends Cubit<UserState> {
     try {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-      DocumentReference doc =
-          await _firebase.collection("user").add({"email": email});
+      DocumentReference doc = await _firebase
+          .collection("user")
+          .add({"email": email, "password": password});
       await _firebase.collection("user").doc(doc.id).update({"id": doc.id});
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
@@ -66,12 +68,11 @@ class UserCubit extends Cubit<UserState> {
       return false;
     }
   }
-
   Future<void> SignOut() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-
     await prefs.remove("id");
     await prefs.remove("email");
     await FirebaseAuth.instance.signOut();
   }
+
 }
