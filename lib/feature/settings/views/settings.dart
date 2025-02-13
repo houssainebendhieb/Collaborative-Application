@@ -23,7 +23,7 @@ class _SettingsState extends State<SettingScreen> {
     String email = sharedPreferences.getString("email") ?? " ";
     passwordController.text = sharedPreferences.getString("password") ?? " ";
     String password = sharedPreferences.getString("password") ?? " ";
-    String username=sharedPreferences.getString("username")??"";
+    String username = sharedPreferences.getString("username") ?? "";
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
       child: Column(
