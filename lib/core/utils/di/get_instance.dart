@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_it/get_it.dart';
+import 'package:google_docs_clone/feature/chat/data/logic/chat_repo.dart';
+import 'package:google_docs_clone/feature/chat/data/logic/chat_repo_imp.dart';
 import 'package:google_docs_clone/feature/homepage/data/logic/homepage_repo.dart';
 import 'package:google_docs_clone/feature/homepage/data/logic/homepage_repo_imp.dart';
 import 'package:google_docs_clone/feature/invitation/logic/repo/invitation_repo.dart';
@@ -15,4 +17,5 @@ Future<void> setup() async {
       () => FirebaseFirestore.instance);
   getIt.registerLazySingleton<HomepageRepo>(() => HomepageRepoImp());
   getIt.registerLazySingleton<InvitationRepo>(() => InvitationRepoImp());
+  getIt.registerLazySingleton<ChatRepo>(() => ChatRepoImp());
 }
