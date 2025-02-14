@@ -14,7 +14,6 @@ class DocumentPageScreen extends StatefulWidget {
 class _DocumentPageScreenState extends State<DocumentPageScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -24,7 +23,7 @@ class _DocumentPageScreenState extends State<DocumentPageScreen> {
         builder: (context, state) {
       return Scaffold(
         appBar: AppBar(
-          title: Text("${state.title}"),
+          title: Text(state.title),
         ),
         body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25),

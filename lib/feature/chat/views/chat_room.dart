@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_docs_clone/core/utils/di/get_instance.dart';
 import 'package:google_docs_clone/feature/chat/data/cubit/chatroom_cubit.dart';
+import 'package:google_docs_clone/feature/chat/data/cubit/info_chatroom_cubit.dart';
+import 'package:google_docs_clone/feature/chat/views/widget/info_screen.dart';
 import 'package:google_docs_clone/feature/chat/views/widget/message_bubble.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -24,9 +26,29 @@ class _ChatRoomState extends State<ChatRoom> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.teamName, style: TextStyle(color: Colors.white)),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.info, color: Colors.white),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return BlocProvider(
+                  create: (context) => InfoChatroomCubit()
+                    ..emitAllUsersOfTeam(idTeam: widget.idTeam),
+                  child: InfoScreen(
+                    idTeam: widget.idTeam,
+                  ),
+                );
+              }));
+            },
+          ),
+          const SizedBox(
+            width: 15,
+          ),
+        ],
+        title:
+            Text(widget.teamName, style: const TextStyle(color: Colors.white)),
         flexibleSpace: Container(
-          decoration: BoxDecoration(color: Colors.blue),
+          decoration: const BoxDecoration(color: Colors.blue),
         ),
         elevation: 4,
       ),
@@ -69,7 +91,7 @@ class _ChatRoomState extends State<ChatRoom> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(30),

@@ -14,7 +14,6 @@ class ChatroomCubit extends Cubit<ChatroomState> {
     listTeams = await chatRepo.getTeams();
     emit(ChatroomSucces(listTeam: listTeams));
   }
-
   Future<void> sendMessage(
       {required String idTeam,
       required String messageContent,

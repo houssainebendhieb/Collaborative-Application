@@ -14,7 +14,6 @@ class _PendingScreenState extends State<PendingScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<InvitationCubit, InvitationState>(
       builder: (context, state) {
-        print(state);
         if (state is InvitationRequestSucces) {
           if ((widget.index == 0 && state.list.isEmpty) ||
               (widget.index == 1 && state.listPending.isEmpty)) {
@@ -22,10 +21,7 @@ class _PendingScreenState extends State<PendingScreen> {
               child: Text("Empty List ..."),
             );
           }
-          print("pending");
-          print(state.listPending);
-          print("request");
-          print(state.list);
+
           return Expanded(
               child: ListView.builder(
                   itemCount: widget.index == 0

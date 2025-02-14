@@ -84,7 +84,6 @@ class _InvitationScreenState extends State<InvitationScreen> {
                   listNames.add(item['name']);
                 }
 
-                print(listNames);
                 late String selectedTeam = listNames[0];
                 showDialog(
                     context: context,

@@ -12,6 +12,7 @@ import 'package:meta/meta.dart';
 
 part 'document_page_state.dart';
 
+
 class DocumentPageCubit extends Cubit<DocumentPageState> {
   DocumentPageCubit({required this.id})
       : super(DocumentPageState(
@@ -21,7 +22,7 @@ class DocumentPageCubit extends Cubit<DocumentPageState> {
               document: Document()..insert(0, "data")),
         )) {
     emitController(idDocument: id);
-    setupRealtimeListener();
+    
   }
   final String id;
   final _firestore = getIt.get<FirebaseFirestore>();
@@ -31,7 +32,6 @@ class DocumentPageCubit extends Cubit<DocumentPageState> {
   Future<void> emitController({required String idDocument}) async {
     final docSnapshot =
         await _firestore.collection('documents').doc(idDocument).get();
-    print(docSnapshot);
     title = docSnapshot.data()!['title'];
     late final Document quillDoc;
     if (docSnapshot.exists && docSnapshot.data()?['content'] != null) {
