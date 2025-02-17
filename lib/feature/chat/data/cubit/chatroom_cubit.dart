@@ -7,7 +7,6 @@ part 'chatroom_state.dart';
 class ChatroomCubit extends Cubit<ChatroomState> {
   final ChatRepo chatRepo;
   ChatroomCubit({required this.chatRepo}) : super(ChatroomInitial());
-
   Future<void> emitTeam() async {
     emit(ChatroomLoading());
     List<Map<String, dynamic>> listTeams;

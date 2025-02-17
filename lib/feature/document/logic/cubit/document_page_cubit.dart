@@ -1,17 +1,10 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:bloc/bloc.dart';
+import 'package:flutter_quill/flutter_quill.dart' ;
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_quill/quill_delta.dart';
-import 'package:google_docs_clone/core/utils/di/get_instance.dart';
-import 'package:meta/meta.dart';
 
-part 'document_page_state.dart';
 
+<<<<<<< Updated upstream
 
 class DocumentPageCubit extends Cubit<DocumentPageState> {
   DocumentPageCubit({required this.id})
@@ -43,46 +36,60 @@ class DocumentPageCubit extends Cubit<DocumentPageState> {
           .doc(idDocument)
           .update({'content': jsonEncode(quillDoc.toDelta().toJson())});
     }
+=======
+// Document State to hold document and users' typing data
+class DocumentState {
+  final QuillController controller;
+  final Map<String, dynamic> usersTyping;
+>>>>>>> Stashed changes
 
-    emit(DocumentPageState(
-        title: title,
-        quillController: QuillController(
-            document: quillDoc,
-            selection: const TextSelection.collapsed(offset: 0))));
-    state.quillController?.addListener(onTextChanged);
+  DocumentState({required this.controller, required this.usersTyping});
+}
+
+class DocumentCubit extends Cubit<DocumentState> {
+  DocumentCubit()
+      : super(DocumentState(controller: QuillController.basic(), usersTyping: {}));
+
+  // Set the QuillController
+  void setController(QuillController controller) {
+    emit(DocumentState(controller: controller, usersTyping: state.usersTyping));
   }
 
-  void onTextChanged() {
-    final delta = state.quillController?.document.toDelta();
-    _firestore.collection('documents').doc(id).update({
-      'content': jsonEncode(delta?.toJson()),
-      'deviceId': "_deviceId", // Prevents self-update loop
+  // Update document content with the given Quill Delta and sync with Firestore
+  void updateText(String docId, Delta delta) {
+    emit(DocumentState(
+        controller: state.controller..document.compose(delta, ChangeSource.remote),
+        usersTyping: state.usersTyping));
+
+    // Update Firestore with the new document content
+    FirebaseFirestore.instance.collection("documents").doc(docId).update({
+      "content": state.controller.document.toDelta().toJson(),
     });
   }
 
-  /// Listen for real-time updates from Firestore
-  void setupRealtimeListener() {
-    realtimeListener =
-        _firestore.collection('documents').doc(id).snapshots().listen(
-      (docSnapshot) {
-        if (docSnapshot.exists) {
-          print("here");
-          final delta =
-              Delta.fromJson(jsonDecode(docSnapshot.data()!['content']));
+  // Update cursor position of a user and sync with Firestore
+  void updateCursor(String docId, String userId, int index, int length, String color, String name) {
+    final updatedUsersTyping = Map<String, dynamic>.from(state.usersTyping);
+    updatedUsersTyping[userId] = {
+      "index": index,
+      "length": length,
+      "color": color,
+      "name": name,
+    };
 
-          state.quillController?.compose(
-            delta,
-            state.quillController!.selection,
-            ChangeSource.remote,
-          );
-          emit(DocumentPageState(
-              quillController: QuillController(
-                document: state.quillController!.document,
-                selection: const TextSelection.collapsed(offset: 0),
-              ),
-              title: title));
-        }
-      },
-    );
+    emit(DocumentState(controller: state.controller, usersTyping: updatedUsersTyping));
+
+    // Update Firestore with the new cursor positions
+    FirebaseFirestore.instance.collection("documents").doc(docId).update({
+      "usersTyping": updatedUsersTyping,
+    });
   }
+<<<<<<< Updated upstream
+=======
+
+  // Update users' typing positions from Firestore
+  void setUsersTyping(Map<String, dynamic> usersTyping) {
+    emit(DocumentState(controller: state.controller, usersTyping: usersTyping));
+  }
+>>>>>>> Stashed changes
 }

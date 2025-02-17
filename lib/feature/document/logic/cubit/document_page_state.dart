@@ -1,11 +1,22 @@
-part of 'document_page_cubit.dart';
+import 'package:flutter_quill/flutter_quill.dart' as quill;
 
-@immutable
-final class DocumentPageState extends Equatable {
-  final QuillController? quillController;
-  final String title;
-  DocumentPageState({required this.quillController, required this.title});
+class DocumentState {
+  final quill.QuillController controller;
+  final Map<String, dynamic> usersTyping;
 
-  @override
-  List<Object?> get props => [quillController, title];
+  DocumentState({
+    required this.controller,
+    required this.usersTyping,
+  });
+
+  // Copy constructor to clone and update state
+  DocumentState copyWith({
+    quill.QuillController? controller,
+    Map<String, dynamic>? usersTyping,
+  }) {
+    return DocumentState(
+      controller: controller ?? this.controller,
+      usersTyping: usersTyping ?? this.usersTyping,
+    );
+  }
 }
