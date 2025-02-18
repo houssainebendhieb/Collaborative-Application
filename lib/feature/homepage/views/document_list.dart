@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_docs_clone/core/utils/di/get_instance.dart';
-<<<<<<< Updated upstream
-=======
-import 'package:google_docs_clone/feature/document/logic/cubit/document_page_cubit.dart';
->>>>>>> Stashed changes
 import 'package:google_docs_clone/feature/document/views/document_page.dart';
 
 import 'package:google_docs_clone/feature/homepage/data/cubit/homepage_cubit.dart';
@@ -51,22 +47,9 @@ class _DocumentListState extends State<DocumentList> {
                               onTap: () {
                                 Navigator.push(context,
                                     MaterialPageRoute(builder: (context) {
-<<<<<<< Updated upstream
                                   return const CRDTEditorScreen(
                                     documentId: "key",
                                     userId: "houssaine",
-=======
-                                  return BlocProvider(
-                                    create: (context) => DocumentCubit(),
-                                    child: DocumentEditorPage(
-                                      currentUserId: getIt
-                                          .get<SharedPreferences>()
-                                          .getString("id")!,
-                                      userColor: "red",
-                                      userName: "houssaine",
-                                      docId: state.listDocument[index]['id'],
-                                    ),
->>>>>>> Stashed changes
                                   );
                                 }));
                               },
