@@ -9,7 +9,7 @@ class DocumentPage extends StatefulWidget {
 class _CRDTTextEditorState extends State<DocumentPage> {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final String docId = "houssaine";
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
   List<CRDTItem> items = [];
 
   @override
@@ -36,6 +36,7 @@ class _CRDTTextEditorState extends State<DocumentPage> {
       });
     });
   }
+
   // 📝 Convert items to string
   String _getText() {
     return items
@@ -43,10 +44,28 @@ class _CRDTTextEditorState extends State<DocumentPage> {
         .map((e) => e.content)
         .join("");
   }
+
   // ✍️ Insert character
   void _insertCharacter(String content) {
     String id = "${DateTime.now().millisecondsSinceEpoch}@user";
+    double index = -1;
+    if (items.isEmpty) {
+      index = 0;
+    }
+    int i = 0;
+
+    while (i < items.length && index == -1) {
+      if (index == -1 && items[i].content != _controller.text[i]) {
+        index = (i + (i - 1)) / 2;
+        break;
+      }
+      i++;
+    }
+    if (index == -1) {
+      index = items.last.index + 1;
+    }
     CRDTItem newItem = CRDTItem(
+        index: index,
         id: id,
         content: content,
         timestamp: DateTime.now().millisecondsSinceEpoch);
@@ -58,19 +77,40 @@ class _CRDTTextEditorState extends State<DocumentPage> {
         .doc(id)
         .set(newItem.toJson());
   }
+
   // ❌ Delete character
   void _deleteCharacter() {
     print("delete");
     if (items.isNotEmpty) {
-      String lastItemId = items.last.id;
+      //String lastItemId = items.last.id;
+      int i = 0;
+      String id = "";
+      while (i < _controller.text.length && i < items.length) {
+        if (i < items.length) {
+          if (items[i].isDeleted == false &&
+              items[i].content != _controller.text[i]) {
+            items[i].isDeleted = true;
+            id = items[i].id;
+            break;
+          }
+        }
+
+        i++;
+      }
+      while (i < items.length) {
+        items[i].isDeleted = false;
+        id = items[i].id;
+        break;
+      }
       _db
           .collection("docs")
           .doc(docId)
           .collection("items")
-          .doc(lastItemId)
+          .doc(id)
           .update({"isDeleted": true});
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,10 +121,12 @@ class _CRDTTextEditorState extends State<DocumentPage> {
         child: Column(
           children: [
             TextField(
-              maxLines: 20,
+              maxLines: 5,
               decoration: InputDecoration(),
               controller: _controller,
               onChanged: (text) {
+                print("here");
+                print(text);
                 if (text.length > _getText().length) {
                   _insertCharacter(text[text.length - 1]);
                 } else {
@@ -92,15 +134,15 @@ class _CRDTTextEditorState extends State<DocumentPage> {
                 }
               },
             ),
-            SizedBox(height: 20),
-            Text("Live Document:"),
+            const SizedBox(height: 20),
+            const Text("Live Document:"),
             StreamBuilder(
               stream: _db
                   .collection("docs")
                   .doc(docId)
                   .collection("items")
                   .where("isDeleted", isEqualTo: false)
-                  .orderBy("timestamp", descending: false)
+                  .orderBy("index", descending: false)
                   .snapshots(),
               builder: (context, snapshot) {
                 print(snapshot);
@@ -109,7 +151,7 @@ class _CRDTTextEditorState extends State<DocumentPage> {
                     .map((doc) => CRDTItem.fromJson(doc.data()))
                     .toList();
                 return Text(liveItems.map((e) => e.content).join(""),
-                    style: TextStyle(fontSize: 18));
+                    style: const TextStyle(fontSize: 18));
               },
             ),
           ],
@@ -125,9 +167,11 @@ class CRDTItem {
   final String content;
   final int timestamp;
   bool isDeleted;
+  final double index;
 
   CRDTItem(
       {required this.id,
+      required this.index,
       required this.content,
       required this.timestamp,
       this.isDeleted = false});
@@ -137,11 +181,13 @@ class CRDTItem {
         'content': content,
         'timestamp': timestamp,
         'isDeleted': isDeleted,
+        'index': index
       };
 
   static CRDTItem fromJson(Map<String, dynamic> json) {
     return CRDTItem(
       id: json['id'],
+      index: json['index'],
       content: json['content'],
       timestamp: json['timestamp'],
       isDeleted: json['isDeleted'] ?? false,
