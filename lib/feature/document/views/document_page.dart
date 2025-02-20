@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -11,6 +13,7 @@ class _CRDTTextEditorState extends State<DocumentPage> {
   final String docId = "houssaine";
   final TextEditingController _controller = TextEditingController();
   List<CRDTItem> items = [];
+  StreamSubscription? _itemsSubscription;
 
   @override
   void initState() {
@@ -18,15 +21,23 @@ class _CRDTTextEditorState extends State<DocumentPage> {
     _listenForUpdates();
   }
 
+  @override
+  void dispose() {
+    _itemsSubscription?.cancel(); // 🧹 Cancel the subscription
+    _controller.dispose(); // 🧹 Dispose of the text controller
+    super.dispose();
+  }
+
   // 🔥 Listen for real-time updates
   void _listenForUpdates() {
-    _db
+    _itemsSubscription = _db
         .collection("docs")
         .doc(docId)
         .collection("items")
-        .orderBy("timestamp", descending: false)
+        .orderBy("index", descending: false)
         .snapshots()
         .listen((snapshot) {
+      if (!mounted) return; // ✅ Check if mounted before calling setState
       setState(() {
         items =
             snapshot.docs.map((doc) => CRDTItem.fromJson(doc.data())).toList();
@@ -49,13 +60,16 @@ class _CRDTTextEditorState extends State<DocumentPage> {
   void _insertCharacter(String content) {
     String id = "${DateTime.now().millisecondsSinceEpoch}@user";
     double index = -1;
+    String motAdded = "";
     if (items.isEmpty) {
+      motAdded = content;
       index = 0;
     }
     int i = 0;
 
     while (i < items.length && index == -1) {
-      if (index == -1 && items[i].content != _controller.text[i]) {
+      if (index == -1 && items[i].content != content[i]) {
+        motAdded = content[i];
         index = (i + (i - 1)) / 2;
         break;
       }
@@ -67,7 +81,7 @@ class _CRDTTextEditorState extends State<DocumentPage> {
     CRDTItem newItem = CRDTItem(
         index: index,
         id: id,
-        content: content,
+        content: motAdded,
         timestamp: DateTime.now().millisecondsSinceEpoch);
 
     _db
@@ -82,7 +96,6 @@ class _CRDTTextEditorState extends State<DocumentPage> {
   void _deleteCharacter() {
     print("delete");
     if (items.isNotEmpty) {
-      //String lastItemId = items.last.id;
       int i = 0;
       String id = "";
       while (i < _controller.text.length && i < items.length) {
@@ -94,7 +107,6 @@ class _CRDTTextEditorState extends State<DocumentPage> {
             break;
           }
         }
-
         i++;
       }
       while (i < items.length) {
@@ -122,13 +134,13 @@ class _CRDTTextEditorState extends State<DocumentPage> {
           children: [
             TextField(
               maxLines: 5,
-              decoration: InputDecoration(),
+              decoration: const InputDecoration(),
               controller: _controller,
               onChanged: (text) {
                 print("here");
                 print(text);
                 if (text.length > _getText().length) {
-                  _insertCharacter(text[text.length - 1]);
+                  _insertCharacter(text);
                 } else {
                   _deleteCharacter();
                 }
