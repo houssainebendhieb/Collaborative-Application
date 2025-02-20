@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_docs_clone/core/utils/di/get_instance.dart';
 import 'package:google_docs_clone/feature/document/views/document_page.dart';
 
 import 'package:google_docs_clone/feature/homepage/data/cubit/homepage_cubit.dart';
-
-import 'package:shared_preferences/shared_preferences.dart';
-
 
 class DocumentList extends StatefulWidget {
   const DocumentList({super.key});
@@ -47,10 +43,7 @@ class _DocumentListState extends State<DocumentList> {
                               onTap: () {
                                 Navigator.push(context,
                                     MaterialPageRoute(builder: (context) {
-                                  return const CRDTEditorScreen(
-                                    documentId: "key",
-                                    userId: "houssaine",
-                                  );
+                                  return  DocumentPage();
                                 }));
                               },
                               child: Padding(

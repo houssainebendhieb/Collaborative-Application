@@ -1,50 +1,150 @@
 import 'package:flutter/material.dart';
-import 'package:google_docs_clone/feature/document/logic/crdtcharacter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class CRDTEditorScreen extends StatefulWidget {
-  final String documentId;
-  final String userId;
-
-  const CRDTEditorScreen(
-      {super.key, required this.documentId, required this.userId});
-
+class DocumentPage extends StatefulWidget {
   @override
-  _CRDTEditorScreenState createState() => _CRDTEditorScreenState();
+  _CRDTTextEditorState createState() => _CRDTTextEditorState();
 }
 
-class _CRDTEditorScreenState extends State<CRDTEditorScreen> {
-  final CRDTTextEditor crdtEditor;
-  final TextEditingController textController = TextEditingController();
-
-  _CRDTEditorScreenState() : crdtEditor = CRDTTextEditor(documentId: "doc1");
+class _CRDTTextEditorState extends State<DocumentPage> {
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final String docId = "houssaine";
+  TextEditingController _controller = TextEditingController();
+  List<CRDTItem> items = [];
 
   @override
   void initState() {
     super.initState();
-    crdtEditor.syncText().listen((chars) {
+    _listenForUpdates();
+  }
+
+  // 🔥 Listen for real-time updates
+  void _listenForUpdates() {
+    _db
+        .collection("docs")
+        .doc(docId)
+        .collection("items")
+        .orderBy("timestamp", descending: false)
+        .snapshots()
+        .listen((snapshot) {
       setState(() {
-        textController.text = chars.map((c) => c.value).join();
+        items =
+            snapshot.docs.map((doc) => CRDTItem.fromJson(doc.data())).toList();
+        if (_controller.text != _getText()) {
+          _controller.text = _getText();
+        }
       });
     });
   }
-
-  void _onTextChanged(String newText) {
-    crdtEditor.addCharacter(newText, widget.userId);
+  // 📝 Convert items to string
+  String _getText() {
+    return items
+        .where((item) => !item.isDeleted)
+        .map((e) => e.content)
+        .join("");
   }
+  // ✍️ Insert character
+  void _insertCharacter(String content) {
+    String id = "${DateTime.now().millisecondsSinceEpoch}@user";
+    CRDTItem newItem = CRDTItem(
+        id: id,
+        content: content,
+        timestamp: DateTime.now().millisecondsSinceEpoch);
 
+    _db
+        .collection("docs")
+        .doc(docId)
+        .collection("items")
+        .doc(id)
+        .set(newItem.toJson());
+  }
+  // ❌ Delete character
+  void _deleteCharacter() {
+    print("delete");
+    if (items.isNotEmpty) {
+      String lastItemId = items.last.id;
+      _db
+          .collection("docs")
+          .doc(docId)
+          .collection("items")
+          .doc(lastItemId)
+          .update({"isDeleted": true});
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('CRDT Text Editor')),
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(title: const Text("CRDT Text Editor")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: TextField(
-          controller: textController,
-          onChanged: _onTextChanged,
-          maxLines: null,
-          decoration: const InputDecoration(border: OutlineInputBorder()),
+        child: Column(
+          children: [
+            TextField(
+              maxLines: 20,
+              decoration: InputDecoration(),
+              controller: _controller,
+              onChanged: (text) {
+                if (text.length > _getText().length) {
+                  _insertCharacter(text[text.length - 1]);
+                } else {
+                  _deleteCharacter();
+                }
+              },
+            ),
+            SizedBox(height: 20),
+            Text("Live Document:"),
+            StreamBuilder(
+              stream: _db
+                  .collection("docs")
+                  .doc(docId)
+                  .collection("items")
+                  .where("isDeleted", isEqualTo: false)
+                  .orderBy("timestamp", descending: false)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                print(snapshot);
+                if (!snapshot.hasData) return const CircularProgressIndicator();
+                List<CRDTItem> liveItems = snapshot.data!.docs
+                    .map((doc) => CRDTItem.fromJson(doc.data()))
+                    .toList();
+                return Text(liveItems.map((e) => e.content).join(""),
+                    style: TextStyle(fontSize: 18));
+              },
+            ),
+          ],
         ),
       ),
+    );
+  }
+}
+
+// 🏗 CRDT Item Model
+class CRDTItem {
+  final String id;
+  final String content;
+  final int timestamp;
+  bool isDeleted;
+
+  CRDTItem(
+      {required this.id,
+      required this.content,
+      required this.timestamp,
+      this.isDeleted = false});
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'content': content,
+        'timestamp': timestamp,
+        'isDeleted': isDeleted,
+      };
+
+  static CRDTItem fromJson(Map<String, dynamic> json) {
+    return CRDTItem(
+      id: json['id'],
+      content: json['content'],
+      timestamp: json['timestamp'],
+      isDeleted: json['isDeleted'] ?? false,
     );
   }
 }
