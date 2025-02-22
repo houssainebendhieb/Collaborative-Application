@@ -19,12 +19,13 @@ class _CRDTTextEditorState extends State<DocumentPage> {
   void initState() {
     super.initState();
     _listenForUpdates();
+    _controller.addListener(() {});
   }
 
   @override
   void dispose() {
     _itemsSubscription?.cancel(); // 🧹 Cancel the subscription
-    _controller.dispose(); // 🧹 Dispose of the text controller
+    _controller.dispose(); // 🧹 Dispose of the text  controller
     super.dispose();
   }
 
@@ -60,30 +61,41 @@ class _CRDTTextEditorState extends State<DocumentPage> {
   void _insertCharacter(String content) {
     String id = "${DateTime.now().millisecondsSinceEpoch}@user";
     double index = -1;
+    bool test = false;
     String motAdded = "";
     if (items.isEmpty) {
       motAdded = content;
       index = 0;
     }
     int i = 0;
+    int j = 0;
+    while (i < items.length && index == -1 && j < content.length) {
+      while (i < items.length && items[i].isDeleted == true) {
+        i++;
+      }
 
-    while (i < items.length && index == -1) {
-      if (index == -1 && items[i].content != content[i]) {
-        motAdded = content[i];
-        index = (i + (i - 1)) / 2;
+      if (index == -1 &&
+          i < items.length &&
+          items[i].content != content[j] &&
+          items[i].isDeleted == false) {
+        test = true;
+        motAdded = content[j];
+        index = (items[i].index + (items[i].index - 1)) / 2;
         break;
       }
+      j++;
       i++;
     }
-    if (index == -1) {
+    if (index == -1 && test == false) {
+      motAdded = content[content.length - 1];
       index = items.last.index + 1;
     }
     CRDTItem newItem = CRDTItem(
         index: index,
         id: id,
         content: motAdded,
+        isDeleted: false,
         timestamp: DateTime.now().millisecondsSinceEpoch);
-
     _db
         .collection("docs")
         .doc(docId)
@@ -94,7 +106,19 @@ class _CRDTTextEditorState extends State<DocumentPage> {
 
   // ❌ Delete character
   void _deleteCharacter() {
-    print("delete");
+    if (_controller.text.isEmpty) {
+      for (var item in items) {
+        if (item.isDeleted == false) {
+          _db
+              .collection("docs")
+              .doc(docId)
+              .collection("items")
+              .doc(item.id)
+              .update({"isDeleted": true});
+        }
+      }
+      _db.collection("docs").doc(docId);
+    }
     if (items.isNotEmpty) {
       int i = 0;
       String id = "";
@@ -137,11 +161,9 @@ class _CRDTTextEditorState extends State<DocumentPage> {
               decoration: const InputDecoration(),
               controller: _controller,
               onChanged: (text) {
-                print("here");
-                print(text);
                 if (text.length > _getText().length) {
                   _insertCharacter(text);
-                } else {
+                } else if (text.length < _getText().length) {
                   _deleteCharacter();
                 }
               },
@@ -157,7 +179,6 @@ class _CRDTTextEditorState extends State<DocumentPage> {
                   .orderBy("index", descending: false)
                   .snapshots(),
               builder: (context, snapshot) {
-                print(snapshot);
                 if (!snapshot.hasData) return const CircularProgressIndicator();
                 List<CRDTItem> liveItems = snapshot.data!.docs
                     .map((doc) => CRDTItem.fromJson(doc.data()))
