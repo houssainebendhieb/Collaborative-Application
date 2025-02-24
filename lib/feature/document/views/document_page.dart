@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_quill/flutter_quill.dart';
+import 'package:uuid/uuid.dart';
 
 class DocumentPage extends StatefulWidget {
   @override
@@ -9,28 +11,58 @@ class DocumentPage extends StatefulWidget {
 }
 
 class _CRDTTextEditorState extends State<DocumentPage> {
+  var idd = Uuid().v1();
+
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final String docId = "houssaine";
   final TextEditingController _controller = TextEditingController();
+  final QuillController quillController = QuillController.basic();
   List<CRDTItem> items = [];
   StreamSubscription? _itemsSubscription;
-
   @override
   void initState() {
     super.initState();
     _listenForUpdates();
-    _controller.addListener(() {});
+
   }
 
   @override
   void dispose() {
     _itemsSubscription?.cancel(); // 🧹 Cancel the subscription
     _controller.dispose(); // 🧹 Dispose of the text  controller
+    deleteController();
     super.dispose();
+  }
+
+  void deleteController() async {
+    await _db
+        .collection("docs")
+        .doc(docId)
+        .collection("cursors")
+        .doc(idd)
+        .delete();
   }
 
   // 🔥 Listen for real-time updates
   void _listenForUpdates() {
+    _itemsSubscription = _db
+        .collection("docs")
+        .doc(docId)
+        .collection("cursors")
+        .doc(idd)
+        .snapshots()
+        .listen((snapshot) {
+      if (!mounted) return; // ✅ Check if mounted before calling setState
+      if (snapshot.exists) {
+        setState(() {
+          var doc = snapshot.data();
+          if (doc!['position'] != null) {
+            _controller.selection =
+                TextSelection.collapsed(offset: doc['position'] ?? 0);
+          }
+        });
+      }
+    });
     _itemsSubscription = _db
         .collection("docs")
         .doc(docId)
@@ -102,6 +134,12 @@ class _CRDTTextEditorState extends State<DocumentPage> {
         .collection("items")
         .doc(id)
         .set(newItem.toJson());
+    _db
+        .collection("docs")
+        .doc(docId)
+        .collection("cursors")
+        .doc(idd)
+        .set({"index": _controller.selection.baseOffset});
   }
 
   // ❌ Delete character
@@ -144,6 +182,12 @@ class _CRDTTextEditorState extends State<DocumentPage> {
           .collection("items")
           .doc(id)
           .update({"isDeleted": true});
+      _db
+          .collection("docs")
+          .doc(docId)
+          .collection("cursors")
+          .doc(idd)
+          .set({"index": _controller.selection.baseOffset});
     }
   }
 
@@ -187,6 +231,8 @@ class _CRDTTextEditorState extends State<DocumentPage> {
                     style: const TextStyle(fontSize: 18));
               },
             ),
+          
+          
           ],
         ),
       ),
@@ -200,6 +246,7 @@ class CRDTItem {
   final String content;
   final int timestamp;
   bool isDeleted;
+
   final double index;
 
   CRDTItem(
@@ -214,7 +261,7 @@ class CRDTItem {
         'content': content,
         'timestamp': timestamp,
         'isDeleted': isDeleted,
-        'index': index
+        'index': index,
       };
 
   static CRDTItem fromJson(Map<String, dynamic> json) {
