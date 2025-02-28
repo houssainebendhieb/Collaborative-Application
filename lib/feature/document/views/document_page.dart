@@ -6,12 +6,15 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:uuid/uuid.dart';
 
 class DocumentPage extends StatefulWidget {
+  const DocumentPage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _CRDTTextEditorState createState() => _CRDTTextEditorState();
 }
 
 class _CRDTTextEditorState extends State<DocumentPage> {
-  var idd = Uuid().v1();
+  var idd = const Uuid().v1();
 
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final String docId = "houssaine";
@@ -23,7 +26,6 @@ class _CRDTTextEditorState extends State<DocumentPage> {
   void initState() {
     super.initState();
     _listenForUpdates();
-
   }
 
   @override
@@ -52,7 +54,7 @@ class _CRDTTextEditorState extends State<DocumentPage> {
         .doc(idd)
         .snapshots()
         .listen((snapshot) {
-      if (!mounted) return; // ✅ Check if mounted before calling setState
+      if (!mounted) return; // ✅ Check if mounted before calling  setState
       if (snapshot.exists) {
         setState(() {
           var doc = snapshot.data();
@@ -205,6 +207,7 @@ class _CRDTTextEditorState extends State<DocumentPage> {
               decoration: const InputDecoration(),
               controller: _controller,
               onChanged: (text) {
+                calculateCharacterPositions();
                 if (text.length > _getText().length) {
                   _insertCharacter(text);
                 } else if (text.length < _getText().length) {
@@ -231,12 +234,38 @@ class _CRDTTextEditorState extends State<DocumentPage> {
                     style: const TextStyle(fontSize: 18));
               },
             ),
-          
-          
           ],
         ),
       ),
     );
+  }
+
+  void calculateCharacterPositions() {
+    final text = _controller.text;
+    final textSpan = TextSpan(
+      text: text,
+      style: const TextStyle(
+          fontSize: 20), // set the font size that matches the TextField
+    );
+
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+    );
+
+    textPainter.layout();
+
+    // Calculate the position of each character
+    List<Offset> listOffsets = [];
+    listOffsets.clear();
+    for (int i = 0; i < text.length; i++) {
+      final offset =
+          textPainter.getOffsetForCaret(TextPosition(offset: i), Rect.zero);
+      listOffsets.add(offset);
+    }
+    print(listOffsets);
+
+    setState(() {});
   }
 }
 
@@ -246,16 +275,13 @@ class CRDTItem {
   final String content;
   final int timestamp;
   bool isDeleted;
-
   final double index;
-
   CRDTItem(
       {required this.id,
       required this.index,
       required this.content,
       required this.timestamp,
       this.isDeleted = false});
-
   Map<String, dynamic> toJson() => {
         'id': id,
         'content': content,
@@ -263,7 +289,6 @@ class CRDTItem {
         'isDeleted': isDeleted,
         'index': index,
       };
-
   static CRDTItem fromJson(Map<String, dynamic> json) {
     return CRDTItem(
       id: json['id'],

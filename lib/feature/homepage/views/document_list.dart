@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_docs_clone/feature/document/views/canvas_screen.dart';
 import 'package:google_docs_clone/feature/document/views/document_page.dart';
-
 import 'package:google_docs_clone/feature/homepage/data/cubit/homepage_cubit.dart';
 
 class DocumentList extends StatefulWidget {
@@ -43,7 +43,7 @@ class _DocumentListState extends State<DocumentList> {
                               onTap: () {
                                 Navigator.push(context,
                                     MaterialPageRoute(builder: (context) {
-                                  return  DocumentPage();
+                                  return DocumentPage();
                                 }));
                               },
                               child: Padding(
@@ -81,7 +81,7 @@ class _DocumentListState extends State<DocumentList> {
           );
         } else if (state is HomepageFailure) {
           return Center(
-            child: Text("${state.errorMessage}"),
+            child: Text(state.errorMessage),
           );
         }
         return const Text("not found");
