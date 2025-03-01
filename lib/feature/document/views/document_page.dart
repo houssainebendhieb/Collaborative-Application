@@ -7,7 +7,6 @@ import 'package:uuid/uuid.dart';
 
 class DocumentPage extends StatefulWidget {
   const DocumentPage({super.key});
-
   @override
   // ignore: library_private_types_in_public_api
   _CRDTTextEditorState createState() => _CRDTTextEditorState();
@@ -252,9 +251,7 @@ class _CRDTTextEditorState extends State<DocumentPage> {
       text: textSpan,
       textDirection: TextDirection.ltr,
     );
-
     textPainter.layout();
-
     // Calculate the position of each character
     List<Offset> listOffsets = [];
     listOffsets.clear();

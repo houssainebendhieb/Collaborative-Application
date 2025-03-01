@@ -41,6 +41,7 @@ dependencies:
   flutter_quill: ^9.3.0
   get_it: ^8.0.3
   infinite_canvas: ^0.0.10
+  jitsi_meet_flutter_sdk: ^11.0.2
   logging: ^1.2.0
   quill_native_bridge: ^10.7.4
   routemaster: ^1.0.1

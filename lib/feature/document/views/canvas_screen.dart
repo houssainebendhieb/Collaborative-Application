@@ -1,59 +1,40 @@
 import 'package:flutter/material.dart';
 
-class CanvasScreen extends StatefulWidget {
-  const CanvasScreen({super.key});
+class TestScreen extends StatefulWidget {
+  const TestScreen({super.key});
 
   @override
-  State<CanvasScreen> createState() => _CanvasScreenState();
+  State<TestScreen> createState() => _TestScreenState();
 }
 
-class _CanvasScreenState extends State<CanvasScreen> {
+class _TestScreenState extends State<TestScreen> {
+  final TextEditingController controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Canvas Screen")),
-        body: Column(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+        child: Column(
           children: [
-            CustomPaint(
-              size: const Size(300, 300),
-              painter: TextPainterExample(),
-            )
+            TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.red),
+                      borderRadius: BorderRadius.circular(10)),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.blue),
+                      borderRadius: BorderRadius.circular(10))),
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  print("here");
+                  print(controller.selection.base.offset);
+                },
+                child:const Text("show"))
           ],
-        ));
-  }
-}
-
-class TextPainterExample extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    // Create a text style
-    TextStyle textStyle =const  TextStyle(
-      color: Colors.black,
-      fontSize: 30,
-      fontWeight: FontWeight.bold,
+        ),
+      ),
     );
-
-    // Create a text span with the desired text and style
-    TextSpan textSpan = TextSpan(
-      text: 'Hello, Canvas!',
-      style: textStyle,
-    );
-
-    // Create a paragraph builder to render the text
-    TextPainter textPainter = TextPainter(
-      text: textSpan,
-      textDirection: TextDirection.ltr,
-    );
-
-    // Layout the text on the canvas (it calculates the size of the text)
-    textPainter.layout();
-
-    // Draw the text on the canvas at the desired position
-    textPainter.paint(canvas, Offset(50, 50));
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
   }
 }

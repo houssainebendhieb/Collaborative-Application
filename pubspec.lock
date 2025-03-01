@@ -461,6 +461,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.19.0"
+  jitsi_meet_flutter_sdk:
+    dependency: "direct main"
+    description:
+      name: jitsi_meet_flutter_sdk
+      sha256: "0c8af2e42e66463b169f3635cc7b860dcbdf6e71830c6c389ac4cb0b0d00052f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "11.0.2"
   lazy_memo:
     dependency: transitive
     description:

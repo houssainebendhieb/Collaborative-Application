@@ -43,7 +43,7 @@ class _DocumentListState extends State<DocumentList> {
                               onTap: () {
                                 Navigator.push(context,
                                     MaterialPageRoute(builder: (context) {
-                                  return DocumentPage();
+                                  return const DocumentPage(); //DocumentPage();
                                 }));
                               },
                               child: Padding(
