@@ -5,8 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_docs_clone/core/utils/di/get_instance.dart';
 import 'package:google_docs_clone/feature/auth/data/cubit/user_cubit.dart';
 import 'package:google_docs_clone/feature/auth/views/login.dart';
+import 'package:google_docs_clone/feature/document/views/document_page.dart';
 import 'package:google_docs_clone/feature/navbar.dart';
 import 'package:google_docs_clone/firebase_options.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -16,7 +18,8 @@ void main() async {
   runApp(
     MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: StreamBuilder(
+        home:
+            DocumentPage() /*StreamBuilder(
             stream: FirebaseAuth.instance.authStateChanges(),
             builder: (context, snapshot) {
               if (snapshot.data != null) {
@@ -27,6 +30,8 @@ void main() async {
                   child: const LoginScreen(),
                 );
               }
-            })),
+            })*/
+
+        ),
   );
 }
