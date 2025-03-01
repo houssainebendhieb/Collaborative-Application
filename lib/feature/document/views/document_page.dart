@@ -194,12 +194,12 @@ class _CRDTTextEditorState extends State<DocumentPage> {
           .collection("items")
           .doc(id)
           .update({"isDeleted": true});
-      _db
-          .collection("docs")
-          .doc(docId)
-          .collection("cursors")
-          .doc(idd)
-          .set({"index": _controller.selection.baseOffset});
+      // _db
+      //     .collection("docs")
+      //     .doc(docId)
+      //     .collection("cursors")
+      //     .doc(idd)
+      //     .set({"index": _controller.selection.baseOffset});
     }
   }
 
@@ -218,7 +218,7 @@ class _CRDTTextEditorState extends State<DocumentPage> {
               decoration: const InputDecoration(),
               controller: _controller,
               onChanged: (text) {
-                calculateCharacterPositions();
+                // calculateCharacterPositions();
                 if (text.length > _getText().length) {
                   _insertCharacter(text);
                 } else if (text.length < _getText().length) {
