@@ -65,6 +65,7 @@ class _CRDTTextEditorState extends State<DocumentPage> {
         .collection("docs")
         .doc(docId)
         .collection("items")
+        .where("isDeleted", isEqualTo: false)
         .orderBy("index", descending: false)
         .snapshots()
         .listen((snapshot) {
@@ -188,12 +189,12 @@ class _CRDTTextEditorState extends State<DocumentPage> {
 
         i++;
       }
-      _db
-          .collection("docs")
-          .doc(docId)
-          .collection("items")
-          .doc(id)
-          .update({"isDeleted": true});
+      // _db
+      //     .collection("docs")
+      //     .doc(docId)
+      //     .collection("items")
+      //     .doc(id)
+      //     .update({"isDeleted": true});
       // _db
       //     .collection("docs")
       //     .doc(docId)
