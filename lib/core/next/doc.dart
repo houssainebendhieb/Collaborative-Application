@@ -135,4 +135,30 @@ class _DocumentScreenState extends State<DocPage> {
       ),
     );
   }
+
+  void calculateCharacterPositions() {
+    final text = _controller.text;
+    final textSpan = TextSpan(
+      text: text,
+      style: const TextStyle(
+          fontSize: 20), // set the font size that matches the TextField
+    );
+
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout();
+    // Calculate the position of each character
+    List<Offset> listOffsets = [];
+    listOffsets.clear();
+    for (int i = 0; i < text.length; i++) {
+      final offset =
+          textPainter.getOffsetForCaret(TextPosition(offset: i), Rect.zero);
+      listOffsets.add(offset);
+    }
+    print(listOffsets);
+
+    setState(() {});
+  }
 }

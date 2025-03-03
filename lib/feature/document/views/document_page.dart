@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:google_docs_clone/core/utils/di/get_instance.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 class DocumentPage extends StatefulWidget {
@@ -18,6 +20,7 @@ class _CRDTTextEditorState extends State<DocumentPage> {
   final TextEditingController _controller = TextEditingController();
   final QuillController quillController = QuillController.basic();
   List<CRDTItem> items = [];
+  int currentIndex = 0;
   StreamSubscription? _itemsSubscription;
   @override
   void initState() {
@@ -70,13 +73,15 @@ class _CRDTTextEditorState extends State<DocumentPage> {
         .snapshots()
         .listen((snapshot) {
       if (!mounted) return; // ✅ Check if mounted before calling setState
-      setState(() {
-        items =
-            snapshot.docs.map((doc) => CRDTItem.fromJson(doc.data())).toList();
-        if (_controller.text != _getText()) {
-          _controller.text = _getText();
-        }
-      });
+
+      items =
+          snapshot.docs.map((doc) => CRDTItem.fromJson(doc.data())).toList();
+      if (_controller.text != _getText()) {
+        _controller.selection=
+        _controller.selection = TextSelection.collapsed(offset: currentIndex);
+        
+      }
+      setState(() {});
     });
   }
 
@@ -207,6 +212,9 @@ class _CRDTTextEditorState extends State<DocumentPage> {
   @override
   Widget build(BuildContext context) {
     print("rewrite here");
+    print("controller index ${currentIndex}");
+    _controller.selection = TextSelection.collapsed(offset: currentIndex);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(title: const Text("CRDT Text Editor")),
@@ -221,8 +229,10 @@ class _CRDTTextEditorState extends State<DocumentPage> {
               onChanged: (text) {
                 // calculateCharacterPositions();
                 if (text.length > _getText().length) {
+                  currentIndex = _controller.selection.baseOffset;
                   _insertCharacter(text);
                 } else if (text.length < _getText().length) {
+                  currentIndex = _controller.selection.baseOffset;
                   _deleteCharacter();
                 }
               },
@@ -254,32 +264,6 @@ class _CRDTTextEditorState extends State<DocumentPage> {
         ),
       ),
     );
-  }
-
-  void calculateCharacterPositions() {
-    final text = _controller.text;
-    final textSpan = TextSpan(
-      text: text,
-      style: const TextStyle(
-          fontSize: 20), // set the font size that matches the TextField
-    );
-
-    final textPainter = TextPainter(
-      text: textSpan,
-      textDirection: TextDirection.ltr,
-    );
-    textPainter.layout();
-    // Calculate the position of each character
-    List<Offset> listOffsets = [];
-    listOffsets.clear();
-    for (int i = 0; i < text.length; i++) {
-      final offset =
-          textPainter.getOffsetForCaret(TextPosition(offset: i), Rect.zero);
-      listOffsets.add(offset);
-    }
-    print(listOffsets);
-
-    setState(() {});
   }
 }
 

@@ -8,12 +8,15 @@ import 'package:google_docs_clone/feature/auth/views/login.dart';
 import 'package:google_docs_clone/feature/document/views/document_page.dart';
 import 'package:google_docs_clone/feature/navbar.dart';
 import 'package:google_docs_clone/firebase_options.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  sharedPreferences.setDouble("index", 0);
   await setup();
   runApp(
     MaterialApp(
