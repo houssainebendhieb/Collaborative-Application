@@ -77,9 +77,9 @@ class _CRDTTextEditorState extends State<DocumentPage> {
       items =
           snapshot.docs.map((doc) => CRDTItem.fromJson(doc.data())).toList();
       if (_controller.text != _getText()) {
-        _controller.selection=
-        _controller.selection = TextSelection.collapsed(offset: currentIndex);
-        
+        _controller.text = _getText();
+        _controller.selection = _controller.selection =
+            TextSelection.collapsed(offset: currentIndex);
       }
       setState(() {});
     });
