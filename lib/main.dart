@@ -18,23 +18,19 @@ void main() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   sharedPreferences.setDouble("index", 0);
   await setup();
-  runApp(
-    MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home:
-            DocumentPage() /*StreamBuilder(
-            stream: FirebaseAuth.instance.authStateChanges(),
-            builder: (context, snapshot) {
-              if (snapshot.data != null) {
-                return const Navbar();
-              } else {
-                return BlocProvider(
-                  create: (context) => UserCubit(),
-                  child: const LoginScreen(),
-                );
-              }
-            })*/
-
-        ),
-  );
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.data != null) {
+            return const Navbar();
+          } else {
+            return BlocProvider(
+              create: (context) => UserCubit(),
+              child: const LoginScreen(),
+            );
+          }
+        }),
+  ));
 }
