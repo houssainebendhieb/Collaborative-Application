@@ -60,6 +60,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                                 BorderRadius.circular(25)),
                                         child: GestureDetector(
                                           onTap: () {
+                                            print(state.list[index]);
                                             context
                                                 .read<InvitationCubit>()
                                                 .changeStatus(
@@ -90,7 +91,10 @@ class _PendingScreenState extends State<PendingScreen> {
                                     ),
                                   ],
                                 )
-                              : Container()
+                              : Container(
+                                  child: Text(
+                                      "${state.listPending[index]['status']}"),
+                                )
                         ],
                       ),
                     );

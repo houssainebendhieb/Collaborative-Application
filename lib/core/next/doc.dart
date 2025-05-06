@@ -137,7 +137,7 @@ class _DocumentScreenState extends State<DocPage> {
   }
 
   void calculateCharacterPositions() {
-    final text = _controller.text;
+    /*final text = _controller.text;
     final textSpan = TextSpan(
       text: text,
       style: const TextStyle(
@@ -159,6 +159,6 @@ class _DocumentScreenState extends State<DocPage> {
     }
     print(listOffsets);
 
-    setState(() {});
+    setState(() {});*/
   }
 }

@@ -42,6 +42,10 @@ class HomepageRepoImp extends HomepageRepo {
   @override
   Future<List<Map<String, dynamic>>> getMyTeam() async {
     final String? id = sharedPreferences.getString("id");
+    print(id);
+    if (id == null) {
+      return [];
+    }
     var res = await _firebase
         .collection("team")
         .where("idOwner", isEqualTo: id)

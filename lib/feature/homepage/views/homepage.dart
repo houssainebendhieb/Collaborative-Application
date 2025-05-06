@@ -14,7 +14,7 @@ class HomePageScreen extends StatefulWidget {
 }
 
 class _HomePageScreenState extends State<HomePageScreen> {
-  var index = 0;
+  var index = 1;
   @override
   Widget build(BuildContext context) {
     var _height = MediaQuery.sizeOf(context).height;
@@ -54,7 +54,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
               decoration: const BoxDecoration(color: Colors.white),
               child: Row(
                 children: [
-                  Expanded(
+                  /* Expanded(
                       child: GestureDetector(
                     onTap: () {
                       setState(() {
@@ -67,7 +67,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                           borderRadius: BorderRadius.circular(25)),
                       child: const Center(child: Text("Documents")),
                     ),
-                  )),
+                  )),*/
                   Expanded(
                       child: GestureDetector(
                     onTap: () {

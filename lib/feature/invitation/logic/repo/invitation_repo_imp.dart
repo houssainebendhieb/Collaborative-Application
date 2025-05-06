@@ -74,12 +74,22 @@ class InvitationRepoImp extends InvitationRepo {
   Future<void> updateInvitaion(
       {required String id, required bool status}) async {
     DocumentReference doc = await _firebase.collection("invitation").doc(id);
+    var document = await _firebase
+        .collection("invitation")
+        .where("id", isEqualTo: id)
+        .get();
+
     doc.update({"status": status});
+    print(document.docChanges.first);
+    var team = await _firebase
+        .collection("team")
+        .where("name",
+            isEqualTo: document.docChanges.first.doc.data()!['teamname'])
+        .get();
     if (status) {
       final String? idd = sharedPreferences.getString('id');
-      await _firebase
-          .collection("userteam")
-          .add({"iduser": idd, "idteam": doc.id});
+      await _firebase.collection("userteam").add(
+          {"iduser": idd, "idteam": team.docChanges.first.doc.data()!['id']});
     }
   }
 }

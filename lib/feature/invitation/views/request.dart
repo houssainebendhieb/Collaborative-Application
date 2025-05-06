@@ -40,24 +40,31 @@ class _RequestScreenState extends State<RequestScreen> {
                           Column(
                             children: [
                               Expanded(
-                                child: Container(
-                                  height: 60,
+                                  child: ElevatedButton(
+                                      onPressed: () {
+                                        print(state.list[index]);
+                                      },
+                                      child: Text(
+                                          "accept")) /*Container(
+                                  height: 100,
                                   width: 100,
                                   decoration: BoxDecoration(
                                       color: Colors.green,
                                       borderRadius: BorderRadius.circular(25)),
                                   child: GestureDetector(
                                     onTap: () {
-                                      context
+                                      print("done");
+                                      print(state.list[index]);
+                                      /*    context
                                           .read<InvitationCubit>()
                                           .changeStatus(
                                               id: state.list[index]['id'],
-                                              status: true);
+                                              status: true);*/
                                     },
                                     child: const Text("Accept"),
                                   ),
-                                ),
-                              ),
+                                ),*/
+                                  ),
                               Container(
                                 height: 20,
                                 width: 100,
